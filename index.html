@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<head>
+  <title>Electron Auto Update Example</title>
+  <style>
+    body {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 20px;
+      font-family: sans-serif;
+      background-color: #eaeaea;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <h1>Electron Auto Update Example</h1>
+  <p id="version"></p>
+  <p id="status"></p>
+
+  <script>
+    const {ipcRenderer} = require("electron");
+    const version = document.getElementById("version");
+    console.log("hello");
+
+    ipcRenderer.send("app_version");
+    ipcRenderer.on("app_version", (event, arg) => {
+      ipcRenderer.removeAllListeners("app_version");
+      version.innerText = "Version " + arg.version;
+    });
+  </script>
+
+  <script>
+    const status = document.getElementById("status");
+
+    window.electron?.onUpdateAvailable?.(() => {
+      status.innerText = "Update available. Downloading...";
+    });
+
+    window.electron?.onUpdateDownloaded?.(() => {
+      status.innerText = "Update downloaded. Restart to apply.";
+    });
+  </script>
+</body>
